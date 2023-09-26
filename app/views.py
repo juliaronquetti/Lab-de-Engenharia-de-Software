@@ -25,7 +25,7 @@ def store(request):
         user.save()
         data['msg'] = 'Usuário cadastrado com sucesso!'
         data['class'] = 'alert-success'
-    return render(request,'create.html',data)
+    return render(request,'painel.html',data)
 
 #formulário de login
 def painel(request):
