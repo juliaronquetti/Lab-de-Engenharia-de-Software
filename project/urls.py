@@ -24,7 +24,7 @@ urlpatterns = [
     path('create/', create),
     path('store/', store),
     path('painel/', painel),
-    path('dologin/', dologin),
-    path('dashboard/', dashboard),
+    path('dologin/', dologin), #Fazer login
+    path('dashboard/', dashboard), #Depois do sucesso do login/pagina inicial
 
 ]
