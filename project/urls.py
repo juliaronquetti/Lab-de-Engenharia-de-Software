@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import home, create, store, painel, dologin, dashboard
+from app.views import home, create, store, painel, dologin, dashboard, logouts
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +26,6 @@ urlpatterns = [
     path('painel/', painel),
     path('dologin/', dologin), #Fazer login
     path('dashboard/', dashboard), #Depois do sucesso do login/pagina inicial
+    path('logouts/', logouts), #Fazer login
 
 ]
