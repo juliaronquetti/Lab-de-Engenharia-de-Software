@@ -1,54 +1,64 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User, auth
+from .models import Profile
 from django.http import HttpResponse
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-#página inicial
-def home(request):
-    return render(request,'home.html')
+@login_required(login_url='signin')
+def index(request):
+    return render(request, 'index.html') #chama o caminho para o html index
 
-#formulário de cadastro
-def create(request):
-    return render(request,'create.html')
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST['username'] #insere na base
+        email = request.POST['email'] #insere na base
+        password = request.POST['password'] #insere na base
+        password2 = request.POST['password2'] #insere na base
+        if password == password2:
+            if User.objects.filter(email=email).exists(): #Verifica se email ja existe
+                messages.info(request, 'Email já cadastrado')
+                return redirect('signup')
+            elif User.objects.filter(username=username).exists():
+                messages.info(request, 'Usuário já cadastrado')
+                return redirect('signup')
+            else:
+                # Cria o usuário
+                user = User.objects.create_user(username = username, email=email, password=password)
+                user.save()
 
-#insere usuários no banco
-def store(request):
-    data={}
-    if(request.POST['password'] != request.POST['password-conf']):
-        data['msg'] = 'Senha e confirmação de senha diferentes!'
-        data['class'] = 'alert-danger'
+                #logar e redirecionar para a pagina de  configuracao do usuario
+                #Criar um perfil para o usuario
+                user_model = User.objects.get(username=username)
+                new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
+                new_profile.save()
+                return redirect('signup') #vai para a pagina de login
+        else:
+            messages.info(request, 'As senhas estão diferentes')
+            return redirect('signup')
+
     else:
-        user = User.objects.create_user(request.POST['name'],request.POST['email'],request.POST['password'])
-        user.first_name = request.POST['name']
-        user.username = request.POST['user']
-        user.save()
-        data['msg'] = 'Usuário cadastrado com sucesso!'
-        data['class'] = 'alert-success'
-    return render(request,'painel.html',data)
+        return render(request, 'signup.html') #chama o caminho para o html index; se não tiver entrado no if, só mostra isso
 
-#formulário de login
-def painel(request):
-    return render(request,'painel.html')
+def signin(request):
+    if request.method=='POST':
+        username=request.POST['username']
+        password=request.POST['password']
 
-#processa o login
-def dologin(request):
-    data = {}
-    user = authenticate(username=request.POST['user'],password=request.POST['password'])
-    if user is not None:
-        login(request, user)
-        return redirect('/dashboard/')
+        user = auth.authenticate(username=username, password=password) #verifica se esta no database
+        if user is not None: #Se estiver
+            auth.login(request, user)
+            return redirect('/')
+        else:
+            messages.info(request, 'Usuário não cadastrado')
+            return redirect('signin')
+
+
     else:
-        data['msg'] = 'Usuário ou senha inválidos'
-        data['class'] = 'alert-danger'
-        return render(request,'painel.html', data)
+        return render(request, 'signin.html')
 
-#página inicial
-def dashboard(request):
-    return render(request,'dashboard/home.html')
-
-
-#logout
-def logouts(request):
-    logout(request)
-    return redirect('/painel/')
+@login_required(login_url='signin')
+def logout(request):
+    auth.logout(request)
+    return redirect('signin')
