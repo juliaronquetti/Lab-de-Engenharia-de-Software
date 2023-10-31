@@ -29,11 +29,14 @@ def signup(request):
                 user.save()
 
                 #logar e redirecionar para a pagina de  configuracao do usuario
+                user_login = auth.authenticate(username=username, password=password)
+                auth.login(request, user_login)
+
                 #Criar um perfil para o usuario
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
                 new_profile.save()
-                return redirect('signup') #vai para a pagina de login
+                return redirect('settings') #vai para a pagina de login
         else:
             messages.info(request, 'As senhas estão diferentes')
             return redirect('signup')
@@ -53,8 +56,6 @@ def signin(request):
         else:
             messages.info(request, 'Usuário não cadastrado')
             return redirect('signin')
-
-
     else:
         return render(request, 'signin.html')
 
@@ -62,3 +63,7 @@ def signin(request):
 def logout(request):
     auth.logout(request)
     return redirect('signin')
+
+@login_required(login_url='signin')
+def settings(request):
+    return render(request, 'setting.html')
