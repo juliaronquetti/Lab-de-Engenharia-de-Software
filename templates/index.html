@@ -11,6 +11,7 @@
     <title>Home</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
@@ -21,126 +22,114 @@
 
 <body>
 
-            <header>
-                <div class="header_inner">
-                    <a href="/" style="text-decoration: none;">
-                        <h2 style="font-size: 30px; font-weight: bold; margin: 0; color: #620B0B;">MindShare</h2>
-                    </a>&nbsp;&nbsp;
-                    <form action="/search" method="POST">
-                        {% csrf_token %}
-                    <div class="left-side">
-                        <!-- Logo -->
+<header>
+    <div class="header_inner">
+        <a href="/" style="text-decoration: none;">
+            <h2 style="font-size: 30px; font-weight: bold; margin: 0; color: #620B0B;">MindShare</h2>
+        </a>&nbsp;&nbsp;
+        <form action="/search" method="POST">
+            {% csrf_token %}
+            <div class="left-side">
+                <!--<div class="header_search"> -->
+                <input type="text" name="username" placeholder="Search for username..">&nbsp;&nbsp;
+                <button type="submit"><i class="fa fa-search fa-1x"></i></button>
+                <!--</div>-->
+            </div>
+        </form>
 
-                        <!--<div class="triger" uk-toggle="target: #wrapper ; cls: sidebar-active">
-                            <i class="uil-bars"></i>
-                        </div>-->
-
-                        <!--<div class="header_search"> -->
-                            <input type="text" name = "username" placeholder="Search for username..">&nbsp;&nbsp;
-                            <button type="submit"><i class="fa fa-search fa-1x"></i></button>
-                        <!--</div>-->
-
-                    </div>
-                    </form>
-                    <!--MindShare na pagina inicial
-                     <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
-                        <h2 style="font-size: 30px; font-weight: bold; color: #620B0B; margin: 0;">MindShare</h2>
-                    </div>-->
-
-                    <!--Profile, upload e logout no header a direita-->
-                    <div class="right-side lg:pr-4">
-                        <a href="/profile/{{user.username}}"> @{{user.username}}</a>
-                        <!-- profile -->
-                        <a href="#">
-                            <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
-                        </a>
-                        <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
-                            <ul>
-                                <li><a href="/profile/{{user.username}}"> Perfil</a></li>
-                                <li><a href="/settings"> Configuração do Perfil </a> </li>
-                                <li><a href="logout"> Log Out</a></li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-            </header>
-
-            <div class="container m-auto">
-                <div class="flex flex-col choose-upload text-center">
-                    <form action="upload" method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <p class="my-3 leading-6" style="font-size: 18px; font-weight: bold;"> Faça uma publicação </p>
-
-                        <div style="background-color: #FFE1E1; padding: 10px; border-radius: 8px;">
-                            <textarea class="button soft-warning small" name="caption" placeholder="Hoje a recomendação é..."></textarea>
-                            <br>
-                            <input type="file" name="image_upload">
-                        </div>
-
-                        <br>
-                        <!--<button class="button bg-blue-700" type="submit" >Post</button>-->
-                        <button class="button bg-red-600" type="submit" style="background-color: #FE5757;">Post</button>
-                        <br><br>
-                    </form>
-                </div>
-
-                <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
-                    <!-- left sidebar--> <div class="space-y-5 flex-shrink-0 lg:w-7/12" >
-                    <!-- post 1-->
-                    {% for post in posts reversed %}
-                    <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0" style="background-color: #FFF5F5;">
-                        <div class="py-3 px-4 space-y-3">
-                            <div class="flex items-center space-x-4">
-                                <a href="/profile/{{post.user}}">
-                                    <strong>{{post.user}}</strong>
-                                </a>
-                                </div>
-                            <p>
-                                {{post.caption}}
-                            </p>
-
-
-                            <div class="flex space-x-4 lg:font-bold">
-                                <div uk-lightbox>
-                                    <a href="{{post.image.url}}">
-                                        <img src="{{post.image.url}}" alt="" class="w-20 h-20 object-cover">
-                                    </a>
-                                </div>
-                                <a href="/like-post?post_id={{post.id}}" class="flex items-center space-x-2">
-                                    <div class="p-2 rounded-full text-black">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="25" height="25" class="">
-                                            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                                        </svg>
-                                        {% if post.no_of_likes == 0 %}
-                                        <p>No likes</p>
-                                        {% elif post.no_of_likes == 1 %}
-                                        <p>Liked by {{post.no_of_likes}} person</p>
-                                        {% else %}
-                                        <p>Liked by {{post.no_of_likes}} people</p>
-                                        {% endif %}
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                </div>
+        <!--Profile, upload e logout no header a direita-->
+        <div class="right-side lg:pr-4">
+            <a href="/profile/{{user.username}}"> @{{user.username}}</a>
+            <!-- profile -->
+            <a href="#">
+                <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
+            </a>
+            <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
+                <ul>
+                    <li><a href="/profile/{{user.username}}"> Perfil</a></li>
+                    <li><a href="/settings"> Configuração do Perfil </a></li>
+                    <li><a href="logout"> Log Out</a></li>
+                </ul>
             </div>
 
+        </div>
+    </div>
+</header>
+
+<div class="container m-auto">
+    <div class="flex flex-col choose-upload text-center">
+        <form action="upload" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p class="my-3 leading-6" style="font-size: 18px; font-weight: bold;"> Faça uma publicação </p>
+            <div style="background-color: #FFE1E1; padding: 10px; border-radius: 8px;">
+                <textarea class="button soft-warning small" name="caption"
+                          placeholder="Hoje a recomendação é..."></textarea>
+                <br>
+                <input type="file" name="image_upload">
+            </div>
+
+            <br>
+            <!--<button class="button bg-blue-700" type="submit" >Post</button>-->
+            <button class="button bg-red-600" type="submit" style="background-color: #FE5757;">Post</button>
+            <br><br>
+        </form>
+    </div>
+
+    <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
+        <!-- left sidebar-->
+        <div class="space-y-5 flex-shrink-0 lg:w-7/12">
+            <!-- post 1-->
+            {% for post in posts reversed %}
+            <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0" style="background-color: #FFF5F5;">
+                <div class="py-3 px-4 space-y-3">
+                    <div class="flex items-center space-x-4">
+                        <a href="/profile/{{post.user}}">
+                            <strong>{{post.user}}</strong>
+                        </a>
+                    </div>
+                    <p>
+                        {{post.caption}}
+                    </p>
+                    <div class="flex space-x-4 lg:font-bold">
+                        <div uk-lightbox>
+                            <a href="{{post.image.url}}">
+                                <img src="{{post.image.url}}" alt="" class="w-20 h-20 object-cover">
+                            </a>
+                        </div>
+                        <a href="/like-post?post_id={{post.id}}" class="flex items-center space-x-2">
+                            <div class="p-2 rounded-full text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                     width="25" height="25" class="">
+                                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/>
+                                </svg>
+                                {% if post.no_of_likes == 0 %}
+                                <p>No likes</p>
+                                {% elif post.no_of_likes == 1 %}
+                                <p>Liked by {{post.no_of_likes}} person</p>
+                                {% else %}
+                                <p>Liked by {{post.no_of_likes}} people</p>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
 
- <!-- Scripts
-    ================================================== -->
-    <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>  
-    <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'assets/js/uikit.js' %}"></script>
-    <script src="{% static 'assets/js/simplebar.js' %}"></script>
-    <script src="{% static 'assets/js/custom.js' %}"></script>
+<!-- Scripts
+   ================================================== -->
+<script src="{% static 'assets/js/tippy.all.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'assets/js/uikit.js' %}"></script>
+<script src="{% static 'assets/js/simplebar.js' %}"></script>
+<script src="{% static 'assets/js/custom.js' %}"></script>
 
 
-    <!--<script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>-->
+<!--<script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>-->
 </body>
 
 
