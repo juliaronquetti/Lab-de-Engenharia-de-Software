@@ -98,9 +98,9 @@ def profile(request, pk):
     user = pk
 
     if FollowersCount.objects.filter(follower=follower, user=user).first():
-        button_text = 'Unfollow'
+        button_text = 'Deixar de seguir'
     else:
-        button_text = 'Follow'
+        button_text = 'Seguir'
 
     user_followers = len(FollowersCount.objects.filter(user=pk))
     user_following = len(FollowersCount.objects.filter(follower=pk))

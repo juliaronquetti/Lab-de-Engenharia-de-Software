@@ -31,7 +31,7 @@
             {% csrf_token %}
             <div class="left-side">
                 <!--<div class="header_search"> -->
-                <input type="text" name="username" placeholder="Search for username..">&nbsp;&nbsp;
+                <input type="text" name="username" placeholder="Encontre um usuário..">&nbsp;&nbsp;
                 <button type="submit"><i class="fa fa-search fa-1x"></i></button>
                 <!--</div>-->
             </div>
@@ -39,7 +39,7 @@
 
         <!--Profile, upload e logout no header a direita-->
         <div class="right-side lg:pr-4">
-            <a href="/profile/{{user.username}}"> @{{user.username}}</a>
+            <a href="/profile/{{user.username}}"> <strong>@{{user.username}}</strong></a>
             <!-- profile -->
             <a href="#">
                 <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
@@ -84,7 +84,7 @@
                 <div class="py-3 px-4 space-y-3">
                     <div class="flex items-center space-x-4">
                         <a href="/profile/{{post.user}}">
-                            <strong>{{post.user}}</strong>
+                            <strong>@{{post.user}}</strong>
                         </a>
                     </div>
                     <p>
